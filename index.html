@@ -163,7 +163,7 @@
 /* Merakit alamat surel saat halaman dibuka.
    Alamat tidak ditulis polos di HTML, jadi tidak terbaca pengumpul surel
    yang hanya mengambil teks halaman. Peramban tanpa JavaScript tetap
-   mendapat keterangan pada <noscript>. */
+   mendapat keterangan pengganti. */
 (function () {
   var titik = document.querySelectorAll('[data-kode]');
   for (var i = 0; i < titik.length; i++) {
