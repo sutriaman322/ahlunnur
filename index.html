@@ -143,7 +143,9 @@
       Laporan kesalahan naskah sangat kami harapkan, terutama untuk bagian
       dzikir yang belum terverifikasi ke edisi cetak.
       <br>
-      Surel: <a href="mailto:sutriamanwungkul@gmail.com">sutriamanwungkul@gmail.com</a>
+      Surel:
+      <a href="#kontak-surel" id="surel" data-kode="115,117,116,114,105,97,109,97,110,119,117,110,103,107,117,108,64,103,109,97,105,108,46,99,111,109">surel</a>
+      <noscript><span class="fine">(aktifkan JavaScript untuk melihat alamat surel)</span></noscript>
       <br>
       GitHub: <a href="https://github.com/sutriaman322" rel="noopener">github.com/sutriaman322</a>
     </p>
@@ -154,7 +156,26 @@
 <footer class="foot">
   <p>Ahlunnur · 2026 · Gratis, tidak untuk komersial</p>
   <p class="fine">Dipersembahkan untuk Keluarga Banjar Patroman.</p>
+  <p class="fine">Laporan: <a href="#kontak-surel" class="surel-kaki" data-kode="115,117,116,114,105,97,109,97,110,119,117,110,103,107,117,108,64,103,109,97,105,108,46,99,111,109">surel</a></p>
 </footer>
+
+<script>
+/* Merakit alamat surel saat halaman dibuka.
+   Alamat tidak ditulis polos di HTML, jadi tidak terbaca pengumpul surel
+   yang hanya mengambil teks halaman. Peramban tanpa JavaScript tetap
+   mendapat keterangan pada <noscript>. */
+(function () {
+  var titik = document.querySelectorAll('[data-kode]');
+  for (var i = 0; i < titik.length; i++) {
+    var el = titik[i];
+    var kode = el.getAttribute('data-kode').split(',');
+    var alamat = '';
+    for (var j = 0; j < kode.length; j++) alamat += String.fromCharCode(parseInt(kode[j], 10));
+    el.href = 'mailto:' + alamat;
+    el.textContent = alamat;
+  }
+})();
+</script>
 
 </body>
 </html>
