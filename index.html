@@ -142,10 +142,29 @@
     <p class="fine">
       Laporan kesalahan naskah sangat kami harapkan, terutama untuk bagian
       dzikir yang belum terverifikasi ke edisi cetak.
-      <br>
-      Surel:
+    </p>
+
+    <form class="form-lapor" id="form-lapor" data-kode="115,117,116,114,105,97,109,97,110,119,117,110,103,107,117,108,64,103,109,97,105,108,46,99,111,109">
+      <label for="f-nama">Nama <span class="fine">— boleh dikosongkan</span></label>
+      <input id="f-nama" name="nama" type="text" autocomplete="name" maxlength="60" placeholder="Nama Anda">
+
+      <label for="f-pesan">Pesan atau koreksi naskah</label>
+      <textarea id="f-pesan" name="pesan" rows="4" maxlength="2000" placeholder="Sebutkan surah/ayat atau bacaan yang perlu diperiksa."></textarea>
+
+      <button class="btn btn-kecil" type="submit">Kirim lewat aplikasi surel</button>
+      <p class="fine" id="status-lapor" role="status" aria-live="polite"></p>
+      <noscript>
+        <p class="fine">
+          Peramban ini menonaktifkan JavaScript, sehingga formulir tidak dapat
+          bekerja. Silakan hubungi lewat
+          <a href="https://github.com/sutriaman322" rel="noopener">github.com/sutriaman322</a>.
+        </p>
+      </noscript>
+    </form>
+
+    <p class="fine">
+      Surel langsung:
       <a href="#kontak-surel" id="surel" data-kode="115,117,116,114,105,97,109,97,110,119,117,110,103,107,117,108,64,103,109,97,105,108,46,99,111,109">surel</a>
-      <noscript><span class="fine">(aktifkan JavaScript untuk melihat alamat surel)</span></noscript>
       <br>
       GitHub: <a href="https://github.com/sutriaman322" rel="noopener">github.com/sutriaman322</a>
     </p>
@@ -171,9 +190,50 @@
     var kode = el.getAttribute('data-kode').split(',');
     var alamat = '';
     for (var j = 0; j < kode.length; j++) alamat += String.fromCharCode(parseInt(kode[j], 10));
-    el.href = 'mailto:' + alamat;
-    el.textContent = alamat;
+    if (el.tagName === 'A') {
+      el.href = 'mailto:' + alamat;
+      el.textContent = alamat;
+    } else {
+      el.setAttribute('data-alamat', alamat);
+    }
   }
+
+  /* Formulir laporan: menyusun isi pesan lalu membuka aplikasi surel
+     pengunjung. Tidak ada data yang dikirim ke mana pun oleh halaman ini. */
+  var form = document.getElementById('form-lapor');
+  if (!form) return;
+
+  /* Membaca sendiri kode alamat dari atribut formulir, tidak bergantung
+     pada perulangan di atas — supaya tetap benar apa pun urutan simpulnya. */
+  function alamatForm() {
+    var kode = (form.getAttribute('data-kode') || '').split(',');
+    var a = '';
+    for (var i = 0; i < kode.length; i++) {
+      var n = parseInt(kode[i], 10);
+      if (!isNaN(n)) a += String.fromCharCode(n);
+    }
+    return a;
+  }
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var alamat = alamatForm();
+    var nama = (document.getElementById('f-nama').value || '').trim();
+    var pesan = (document.getElementById('f-pesan').value || '').trim();
+    var status = document.getElementById('status-lapor');
+    if (pesan.length === 0) {
+      status.textContent = 'Pesan masih kosong — tuliskan dulu koreksinya.';
+      document.getElementById('f-pesan').focus();
+      return;
+    }
+    var judul = 'Ahlunnur — laporan' + (nama ? ' dari ' + nama : '');
+    var isi = pesan + '\n\n---\nNama: ' + (nama || '-') +
+              '\nDikirim dari halaman unduh Ahlunnur';
+    window.location.href = 'mailto:' + alamat +
+      '?subject=' + encodeURIComponent(judul) +
+      '&body=' + encodeURIComponent(isi);
+    status.textContent = 'Aplikasi surel dibuka. Tekan kirim di sana untuk mengirimkan.';
+  });
 })();
 </script>
 
